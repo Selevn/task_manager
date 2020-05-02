@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Home</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="/bs/css/bootstrap.min.css" type="text/css" rel="stylesheet">
+    <link href="/bs/css/jquery-ui.min.css" type="text/css" rel="stylesheet">
+    <link href="/main.css" type="text/css" rel="stylesheet">
+    <link href="/tasks.css" type="text/css" rel="stylesheet">
+
+    <link rel = "stylesheet" href="/bs/css/fa.css">
+
+    <script src="/bs/js/jquery.min.js"></script>
+    <script src="/bs/js/jquery-ui.min.js"></script>
+    <script src="/bs/js/bootstrap.min.js"></script>
+
+    <script src="/bs/js/jquery.min.js"></script>
+    <script src="/bs/js/jquery-ui.min.js"></script>
+    <script src="/bs/js/popper.min.js"></script>
+    <script src="/bs/js/bootstrap.min.js"></script>
+    <script>
+        $( function() {
+            $( "#plans, #doing, #done" ).sortable({
+                connectWith: ".connectedSortable"
+            }).disableSelection();
+        } );
+        $('#trash_box').tooltip('show')
+    </script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Tasker</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+        </ul>
+        <div class="navbar-nav mr-3">
+            <span class="nav-item nav-link user mr-3" id="username">{{username}}</span>
+            <a class="nav-item nav-link" href="/login/logout/">Exit</a>
+        </div>
+    </div>
+</nav>
+<div style ="width:100%; padding:0;">
+<div class="container h-100-percent global_container" style = "max-width:100%">
+    <div class="row h-100-percent">
+        <div class="col-sm-2 friends">
+            <div class = "container friend-list">
+                <h3>Друзья</h3>
+                <div><input type="text" id = "friend_name" placeholder="Найдите друга"><input type="button" value="Найти" onclick="find_friend()"></div><hr>
+                <div class="friend-card">
+                    <span style="font-size: 1.1rem; font-weight:bolder ;">Андрей</span>
+                    <span style="float: right; color:#00ca00; display: none;">Online</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-8 decks_list">
+            <div class = "container main_text_container">
+                <div class = "row">
+                    <div class="col-sm-4">
+                        {{#with add_user}}
+                            <i class="fa fa-trash-o" data-toggle="tooltip" data-placement="bottom" title="Dropped" id="trash_box"></i>
+                        {{/with}}
+                    </div>
+                    <div class="col-sm-4 middle_text">
+                        <h3>Tasks</h3>
+                    </div>
+                    <div class="col-sm-4 right_text">
+                        <button id="add_desc" onclick="add_task()">Add</button>
+                        {{#with add_user}}
+                        <button id="del_desc" onclick="del_desc()">Delete desc</button>
+                        {{/with}}
+                    </div>
+                </div>
+
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm align-content-center">
+                        <h4 align="center">TODO</h4>
+                    </div>
+                    <div class="col-sm">
+                        <h4 align="center">In process</h4>
+                    </div>
+                    <div class="col-sm">
+                        <h4 align="center">Done</h4>
+                    </div>
+
+                </div>
+            </div>
+            <ul id="plans" class="connectedSortable" >
+                {{#each task0}}
+                    <li class="task" id="{{this.id}}" onmouseup="save(this)">
+                        <h5 class="card-title">{{this.name}}</h5>
+                        <p class="card-text">{{this.description}}</p>
+                        <hr>
+                        <p class="card-text"><small>Made by {{this.whois}}</small><small style = "float:right">Last updated by {{this.last_user}}</small></p>
+                    </li>
+                {{/each}}
+            </ul>
+            <ul id="doing" class="connectedSortable">
+                {{#each task1}}
+                    <li class="task" id="{{this.id}}" onmouseup="save(this)">
+                        <h5 class="card-title">{{this.name}}</h5>
+                        <p class="card-text">{{this.description}}</p>
+                        <hr>
+                        <p class="card-text"><small>Made by {{this.whois}}</small><small style = "float:right">Last updated by {{this.last_user}}</small></p>
+                    </li>
+                {{/each}}
+            </ul>
+            <ul id="done" class="connectedSortable">
+                {{#each task2}}
+                    <li class="task" id="{{this.id}}" onmouseup="save(this)">
+                        <h5 class="card-title">{{this.name}}</h5>
+                        <p class="card-text">{{this.description}}</p>
+                        <hr>
+                        <p class="card-text"><small>Made by {{this.whois}}</small><small style = "float:right">Last updated by {{this.last_user}}</small></p>
+                    </li>
+                {{/each}}
+            </ul>
+        </div>
+        <div class="col-sm-2 notifications">
+            <div class = "container notifications-list">
+                <h3>Уведомления</h3>
+                <hr>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+{{#with admin_code}}
+<script src = "/js/admin.js"></script>
+{{/with}}
+<script src = "/js/notifications.js"></script>
+<script>
+
+
+    function add_task() {
+
+        var description, name, table_id;
+        name = prompt("Введите название: ");
+        if (name != null){
+        description = prompt("Ввседите описание: ");
+        table_id = document.location.pathname.replace('/desc/','');
+         if (description != null) {
+            const request = new XMLHttpRequest();
+            const url = "/add_task";
+            var params = JSON.stringify({table_id: table_id, name: name, description: description});
+            request.open("POST", url, true);
+            request.setRequestHeader("Content-Type", "application/json");
+            request.addEventListener("readystatechange", () => {
+                if (request.readyState === 4 && request.status === 200) {
+                    console.log(request.responseText);
+                }
+            });
+            request.send(params);
+        } }
+        setTimeout(()=>{location.reload()},300);
+    }
+
+
+
+
+function  save(q) {
+    setTimeout(()=>{
+            var q_p;
+            switch(q.parentNode.id)
+            {
+                case 'plans':
+                {
+                    q_p = 0;
+                }
+                break;
+                case 'doing':
+                {
+                    q_p = 1;
+                }
+                break;
+                case 'done':
+                {
+                    q_p = 2;
+                }
+                break;
+            }
+                        const request = new XMLHttpRequest();
+                        const url = "/upd_task";
+                        var params = JSON.stringify({task_id: q.id, position: q_p});
+                     request.open("POST", url, true);
+                     request.setRequestHeader("Content-Type", "application/json");
+                     request.addEventListener("readystatechange", () => {
+                            if (request.readyState === 4 && request.status === 200) {
+                                console.log(request.responseText);
+                            }
+                        });
+                        request.send(params);
+                        location.reload();
+        },500);
+                }
+</script>
+</html>
+

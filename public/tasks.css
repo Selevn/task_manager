@@ -1,0 +1,41 @@
+.connectedSortable
+{
+    width:33%;
+    float: left;
+    border:.2rem solid #cccccc;
+    border-radius: .5rem;
+    list-style-type: none;
+    margin: .1%;
+    padding:.4rem;
+    min-height: 200px;
+}
+#plans li, #doing li, #done li
+{
+    font-size: .8rem;
+    border-radius:5px;
+    min-width:5rem;
+}
+#plans , #doing , #done
+{
+    min-height: 80%;
+}
+
+li{
+    margin-bottom: .3rem;
+    padding: .5rem;
+}
+#plans li{
+    background-color: rgba(205, 42, 66, 0.50);
+}
+#doing li
+{
+    background-color: rgba(255, 247, 171, 0.51);
+}
+#done li
+{
+    background-color: rgba(0, 128, 0, 0.51);
+}
+#trash_box
+{
+    font-size: 3rem;
+}

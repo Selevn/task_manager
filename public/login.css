@@ -1,0 +1,32 @@
+body
+{text-align: center;}
+.center-container
+{
+    margin: auto;
+    width:500px;
+    padding: 30px;
+    border-radius: 30px;
+    background-color: #f7f7f7;
+    margin-top: 70px;
+    text-align: center;
+}
+input
+{
+    margin:10px;
+    width: 300px;
+    font-size: 19px;
+    padding: 6px 0 4px 10px;
+    border: 1px solid #cecece;
+    background: #F6F6f6;
+    border-radius: 8px;
+    transition: .3s;
+}
+input:hover
+{
+    background-color: #d8d8d8;
+}
+.login_header
+{
+    font-size:2rem;
+    font-weight: bold;
+}
