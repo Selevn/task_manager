@@ -16,6 +16,10 @@ module.exports.add_desc = async function () {
 module.exports.kick_user = (username, desc_id)=>kick(username, desc_id);
 
 var kick = async function (username, desc_id) {
+    console.log(username)
+    console.log('from')
+
+    console.log(desc_id)
     let users_count=-1;
     try
     {
@@ -39,7 +43,7 @@ var kick = async function (username, desc_id) {
             index++;
         });
 
-        users.splice(index-1,1);
+        users.splice(index,1);
         users_count = users.length;
         users = JSON.stringify(users);
         await pool.query("UPDATE descplace SET users = ? WHERE id = ?",[users,desc_id]);
@@ -90,27 +94,38 @@ module.exports.get_desc_tasks = async function () {
     return wer;
 };
 
-module.exports.check_user = async function (user_id, table_id) {
-    var users = await pool.query("SELECT users FROM descplace WHERE id = (?)", [table_id]);
+module.exports.get_users = (table_id)=>get_users(table_id);
+
+var get_users = async function (table_id)
+{
+    let users = await pool.query("SELECT users FROM descplace WHERE id = (?)", [table_id]);
     users = JSON.parse(users[0][0].users);
+    return users
+};
+
+module.exports.check_user = async function (user_id, table_id) {
+    var users = await get_users(table_id);
     var bool = false;
     users.forEach(function (item)
     {
         if(Number(item.id) == Number(user_id))
             {
                 bool = true;
-                if(item.isadm == true)
+                if(Number(item.isadm) == 2)
                 {
                     bool = 'admin';
+                }
+                if(Number(item.isadm) == 3)
+                {
+                    bool = 'creator';
                 }
             }
     });
     return bool;
 };
 module.exports.add_user_in_desc = async function (user_id, table_id) {
-    var users = await pool.query("SELECT users FROM descplace WHERE id = (?)", [table_id]);
-    users = JSON.parse(users[0][0].users);
-    users.push({id:user_id,isadm:false});
+    var users = await get_users(table_id);
+    users.push({id:user_id,isadm:1});
     try
     {
         await pool.query("UPDATE descplace SET users = (?) WHERE id = (?)",[JSON.stringify(users),table_id]);
@@ -123,11 +138,22 @@ module.exports.add_user_in_desc = async function (user_id, table_id) {
         return false;
     }
 };
+module.exports.upd_users = async function (data, table_id) {
+    try
+    {
+        await pool.query("UPDATE descplace SET users = (?) WHERE id = (?)",[data,table_id]);
+        return true;
+    }
+    catch(e)
+    {
+        console.log(e);
+        return false;
+    }
+};
 
 module.exports.del_desc = async function(desc_id)
 {
-    var users = await pool.query("SELECT users FROM descplace WHERE id = (?)", [desc_id]);
-    users = JSON.parse(users[0][0].users);
+    var users = await get_users(desc_id);
 
     users.forEach(function(item)
     {

@@ -1,22 +1,3 @@
-function add_user() {
-var friend_name = prompt('Enter your friend`s username');
-    if(friend_name!=null)
-    {
-        const request = new XMLHttpRequest();
-        const url = "/add_user_in_desc";
-        var table_id = document.location.pathname.replace('/desc/','');
-        var params = JSON.stringify({table_id:table_id,username: friend_name});
-        request.open("POST", url, true);
-        request.setRequestHeader("Content-Type", "application/json");
-        request.addEventListener("readystatechange", () => {
-            if (request.readyState === 4 && request.status === 200) {
-                alert(request.responseText);
-            }
-        });
-        request.send(params);
-    }
-}
-
 $( "#trash_box" ).droppable({
     hoverClass: "active",
     drop: function( event, ui ) {
@@ -31,9 +12,30 @@ $( "#trash_box" ).droppable({
         request.addEventListener("readystatechange", () => {
             if (request.readyState === 4 && request.status === 200) {
                 console.log(request.responseText);
+                location.reload();
             }
         });
         request.send(params);
 
     }
 });
+
+function del_desc() {
+    if(confirm("Are you shure want to delete this desc? All users will lost for tasks inside."))
+    {
+        var table_id;
+        table_id = document.location.pathname.replace('/desc/','');
+        const request = new XMLHttpRequest();
+        const url = "/del_desc";
+        var params = JSON.stringify({table_id: table_id});
+        request.open("POST", url, true);
+        request.setRequestHeader("Content-Type", "application/json");
+        request.addEventListener("readystatechange", () => {
+            if (request.readyState === 4 && request.status === 200) {
+                console.log(request.responseText);
+                window.history.back();
+            }
+        });
+        request.send(params);
+    }
+}

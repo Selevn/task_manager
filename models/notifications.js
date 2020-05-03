@@ -27,7 +27,7 @@ module.exports.send_notification = async function (recipient, sender, data) {
                 basic_notifications[0][0].notifications = JSON.stringify(basic_notifications[0][0].notifications);
 
                 await pool.query("UPDATE users SET notifications = (?) WHERE username = (?)",[basic_notifications[0][0].notifications,recipient]);
-                return "Request sended!";
+                return "Request sent!";
             }
             else
                 return "You have already send friend request!";
@@ -61,11 +61,11 @@ module.exports.invite_friend_notif = async function (from, whom, where, data) {
             basic_notifications[0][0].notifications = JSON.stringify(basic_notifications[0][0].notifications);
 
             await pool.query("UPDATE users SET notifications = (?) WHERE username = (?)",[basic_notifications[0][0].notifications,whom]);
-            return "Request sended!";
+            return "Request sent!";
         }
         else
         {
-            return "You have already send invite request!";
+            return "Request already sent!";
         }
     }
 catch(e)

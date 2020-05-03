@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(session({
     secret: "RETTAH_DAM",
     resave: true,
-    cookie: {maxAge: 1000*60*15},
+    cookie: {maxAge: 1000*60*60},
     httpOnly: true,
     saveUninitialized: true
 }));

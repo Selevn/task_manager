@@ -16,7 +16,7 @@ module.exports.get_desks_home_page = async function (request, response)
 
 module.exports.add_desc = async function (request,response) {
     console.log(request.user);
-    const user = JSON.stringify([{id:request.user.id,isadm:true}]);
+    const user = JSON.stringify([{id:request.user.id,isadm:3}]);
     try {
         let q = await require('../models/descs').add_desc(request.body.name, request.body.description, user);
         //console.log(q[0].insertId);
@@ -76,9 +76,11 @@ module.exports.desc_page =  async function (request,response) {
         tasks1 = await require('../models/tasks').get_tasks(tasks, 1);
         tasks2 = await require('../models/tasks').get_tasks(tasks, 2);
         if(check_user === 'admin')
-            response.render('desc', {admin_code:{},add_user:'1',username:request.user.username,task0:tasks0[0], task1:tasks1[0], task2:tasks2[0]});
+            response.render('desc', {admin:{},username:request.user.username,task0:tasks0[0], task1:tasks1[0], task2:tasks2[0]});
+        else if(check_user === 'creator')
+            response.render('desc', {admin:{},creator:'1',username:request.user.username,task0:tasks0[0], task1:tasks1[0], task2:tasks2[0]});
         else
-            response.render('desc', {username:request.user.username,task0:tasks0[0], task1:tasks1[0], task2:tasks2[0]});
+        response.render('desc', {username:request.user.username,task0:tasks0[0], task1:tasks1[0], task2:tasks2[0]});
     }
     else
     {
@@ -157,29 +159,35 @@ module.exports.delete_task =  async function (request,response) {
 module.exports.add_notification = async function (request,response)
 {
     var q;
-    try
+    if(request.body.getter_name == request.user.username)
+    {
+        q = "You can't send friend request to yourself!";
+    }
+    else
     {
         try
         {
-            var friend_list = await require('../models/users').get_friend_list(request.body.getter_name);
+            try
+            {
+                var friend_list = await require('../models/users').get_friend_list(request.body.getter_name);
+            }
+            catch(e)
+            {
+                console.log(e);
+                q = "No person "+request.body.getter_name+" registered in system";
+            }
+            if (friend_list.indexOf(request.user.username)==-1)
+            {
+                q = await require('../models/notifications').send_notification(request.body.getter_name, request.user.username, request.body.data);
+                q = "Request sent!";
+            }
+            else
+                q = "You are friends yet!";
         }
         catch(e)
         {
             console.log(e);
-            q = "No person "+request.body.getter_name+" registered in system";
         }
-        if (friend_list.indexOf(request.user.username)==-1)
-        {
-            q = await require('../models/notifications').send_notification(request.body.getter_name, request.user.username, request.body.data);
-            q = "Request sended!";
-        }
-
-        else
-            q = "You are friends yet!";
-    }
-    catch(e)
-    {
-        console.log(e);
     }
    response.send(q);
 
@@ -321,5 +329,66 @@ module.exports.del_desc = async function (request,response)
     var desc_id = request.body.table_id;
     await require('../models/descs').del_desc(desc_id);
     response.send("successfully deleted");
+};
+
+module.exports.get_table_users = async function (request,response)
+{
+    var desc_id = request.body.table_id;
+    let users = await require('../models/descs').get_users(desc_id);
+    let ans = [];
+    for (i=0;i<users.length;i++)
+    {
+        let tmp = await require('../models/users').get_nick_by_id(users[i].id);
+        ans.push({username:tmp,role:users[i].isadm})
+    }
+    response.send([request.user.username,ans]);
+};
+
+
+module.exports.ch_person_rules = async function (request,response)
+{
+    let q;
+    try
+    {
+        var desc_id = request.body.table_id;
+        var user_id = await require('../models/users').get_id_by_nick(request.body.username);
+        user_id = user_id.id;
+        console.log(desc_id)
+        let users = await require('../models/descs').get_users(desc_id);
+        users.forEach((item)=>
+        {
+            if(item.id == user_id)
+            {
+                item.isadm = parseInt(item.isadm)+parseInt(request.body.what_to_do);
+                if (item.isadm<1)
+                    item.isadm=1;
+                return;
+            }
+        });
+        await require('../models/descs').upd_users(JSON.stringify(users),desc_id);
+        q = "Success!"
+    }
+    catch(e)
+    {
+        console.log(e);
+        q = "Error! Try again later!"
+    }
+    response.send(q);
+};
+module.exports.kick_person = async function (request,response)
+{
+    let q;
+    try
+    {
+        await require('../models/descs').kick_user(request.body.username,request.body.table_id);
+
+        q = "Success!"
+    }
+    catch(e)
+    {
+        console.log(e);
+        q = "Error! Try again later!"
+    }
+    response.send(q);
 };
 

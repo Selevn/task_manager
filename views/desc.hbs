@@ -32,7 +32,7 @@
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">Tasker</a>
+    <a class="navbar-brand" href="/home">Tasker</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -51,19 +51,16 @@
     <div class="row h-100-percent">
         <div class="col-sm-2 friends">
             <div class = "container friend-list">
-                <h3>Друзья</h3>
-                <div><input type="text" id = "friend_name" placeholder="Найдите друга"><input type="button" value="Найти" onclick="find_friend()"></div><hr>
-                <div class="friend-card">
-                    <span style="font-size: 1.1rem; font-weight:bolder ;">Андрей</span>
-                    <span style="float: right; color:#00ca00; display: none;">Online</span>
-                </div>
+                <h3>Friends</h3>
+                <div><input type="text" id = "friend_name" placeholder="Enter friend name"><input type="button" value="Search" onclick="find_friend()"></div><hr>
+
             </div>
         </div>
         <div class="col-sm-8 decks_list">
             <div class = "container main_text_container">
                 <div class = "row">
                     <div class="col-sm-4">
-                        {{#with add_user}}
+                        {{#with admin}}
                             <i class="fa fa-trash-o" data-toggle="tooltip" data-placement="bottom" title="Dropped" id="trash_box"></i>
                         {{/with}}
                     </div>
@@ -71,15 +68,41 @@
                         <h3>Tasks</h3>
                     </div>
                     <div class="col-sm-4 right_text">
-                        <button id="add_desc" onclick="add_task()">Add</button>
-                        {{#with add_user}}
-                        <button id="del_desc" onclick="del_desc()">Delete desc</button>
+                        <button class="btn btn-primary" onclick="add_task()">Add</button>
+                        <button class="btn btn-primary" onclick="show_users()" data-toggle="modal" data-target="#myModal">Show users</button>
+                        {{#with creator}}
+                        <button class="btn btn-danger" onclick="del_desc()">Delete desc</button>
                         {{/with}}
+                        <!-- Кнопка запуска модального окна -->
+
+
+
+
                     </div>
                 </div>
 
             </div>
-            <div class="container">
+            <!-- Модальное окно -->
+            <div class="modal fade bd-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="myModalLabel">Users</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
+                        <div class="modal-body">
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="container" style = "padding-top: 1rem">
                 <div class="row">
                     <div class="col-sm align-content-center">
                         <h4 align="center">TODO</h4>
@@ -126,7 +149,7 @@
         </div>
         <div class="col-sm-2 notifications">
             <div class = "container notifications-list">
-                <h3>Уведомления</h3>
+                <h3>Notifications</h3>
                 <hr>
             </div>
         </div>
@@ -134,11 +157,13 @@
 </div>
 </div>
 </body>
-{{#with admin_code}}
+
+{{#with admin}}
 <script src = "/js/admin.js"></script>
 {{/with}}
 <script src = "/js/notifications.js"></script>
 <script src = "/js/desc_scripts.js"></script>
+
 
 </html>
 

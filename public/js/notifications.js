@@ -59,7 +59,7 @@ function upd_notif()
                     $('.notification-card').remove();
                     tmp[1].forEach(function(item)
                     {
-                        $('.notifications-list').append('<div class="notification-card"><span class = "notif-text">'+item.data+' from </span><b>'+item.from+'</b><div class = "buttons"><button class = "accept notif-button" onclick = "accept_notify(\''+item.data+'\',\''+item.from+'\')">Accept</button><button class = "decline notif-button" onclick = "decline_notify(\''+item.data+'\',\''+item.from+'\')">Decline</button></div></div>')
+                        $('.notifications-list').append('<div class="notification-card"><span class = "notif-text">'+item.data+' from </span><b>'+item.from+'</b><div class = "buttons d-none"><button class = "accept notif-button" onclick = "accept_notify(\''+item.data+'\',\''+item.from+'\')">Accept</button><button class = "decline notif-button" onclick = "decline_notify(\''+item.data+'\',\''+item.from+'\')">Decline</button></div></div>')
                     })
                 }
 
@@ -86,11 +86,11 @@ function show_friends()
                     task_id = window.location.pathname.slice(1+window.location.pathname.lastIndexOf('/'));
                     if(window.location.pathname.indexOf('/desc/')!=-1)//если в доске
                     {
-                        $('.friend-list').append('<div class="friend-card"><span style="font-size: 1.1rem; font-weight:bolder ;">'+item+'</span><div class = "buttons"><button class = "accept notif-button" onclick = "invite_friend(\''+item+'\',\''+task_id+'\')">Invite</button><button class = "decline notif-button" onclick = "delete_friend(\''+item+'\')">Delete</button></div></div>') //TODO:deleting and inviting friends
+                        $('.friend-list').append('<div class="friend-card"><span style="font-size: 1.1rem; font-weight:bolder ;">'+item+'</span><div class = "buttons d-none"><button class = "accept notif-button" onclick = "invite_friend(\''+item+'\',\''+task_id+'\')">Invite</button><button class = "decline notif-button" onclick = "delete_friend(\''+item+'\')">Delete</button></div></div>') //TODO:deleting and inviting friends
                     }
                     else
                     {
-                        $('.friend-list').append('<div class="friend-card"><span style="font-size: 1.1rem; font-weight:bolder ;">'+item+'</span><div class = "buttons"><button class = "decline notif-button" onclick = "delete_friend(\''+item+'\')">Delete</button></div></div>') //TODO:deleting and inviting friends
+                        $('.friend-list').append('<div class="friend-card"><span style="font-size: 1.1rem; font-weight:bolder ;">'+item+'</span><div class = "buttons d-none"><button class = "decline notif-button" onclick = "delete_friend(\''+item+'\')">Delete</button></div></div>') //TODO:deleting and inviting friends
                     }
 
                 });
@@ -124,6 +124,7 @@ function accept_notify(type, data)
     request.addEventListener("readystatechange", () => {
         if (request.readyState === 4 && request.status === 200) {
             console.log(request.responseText);
+            location.reload();
         }
         upd_notif();
     });
@@ -168,8 +169,23 @@ function delete_friend(friend_name)
     request.addEventListener("readystatechange", () => {
         if (request.readyState === 4 && request.status === 200) {
             console.log(request.responseText);
+            location.reload();
         }
     });
     request.send(params);
 }
 
+$('body').on('click','.friend-card', function () {
+    b = $( this ).children('.buttons');
+    if(b.hasClass('d-none'))
+        b.removeClass('d-none');
+    else
+        b.addClass('d-none');
+});
+$('body').on('click','.notification-card', function () {
+    b = $( this ).children('.buttons');
+    if(b.hasClass('d-none'))
+        b.removeClass('d-none');
+    else
+        b.addClass('d-none');
+});

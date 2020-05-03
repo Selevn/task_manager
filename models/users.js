@@ -35,6 +35,14 @@ module.exports.get_id_by_nick = async function (username) {
  else
      return false;
 };
+module.exports.get_nick_by_id = async function (id) {
+ const wer = await pool.query("SELECT username FROM users WHERE id = ?",[id]);
+ if(wer[0][0]!=undefined)
+    return wer[0][0].username;
+ else
+     return false;
+};
+
 module.exports.get_friend_list = async function () {
  const wer = await pool.query("SELECT friends FROM users WHERE username = (?)",[...arguments]);
  return wer[0][0].friends;

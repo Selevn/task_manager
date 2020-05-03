@@ -15,6 +15,8 @@ router.post('/add_task/',require('../models/auth').checkAuth,jsonParser,home_con
 router.post('/upd_task/',require('../models/auth').checkAuth,jsonParser,home_controller.upd_task);
 router.post('/delete_task/',require('../models/auth').checkAuth,jsonParser,home_controller.delete_task);
 
+router.post('/get_table_users/',require('../models/auth').checkAuth,jsonParser,home_controller.get_table_users);
+
 router.post('/send_friend_request/',require('../models/auth').checkAuth,jsonParser,home_controller.add_notification);
 
 router.post('/get_notifications/',require('../models/auth').checkAuth,jsonParser,home_controller.get_notifications);
@@ -33,5 +35,9 @@ router.post('/del_friend/',require('../models/auth').checkAuth,jsonParser,home_c
 router.post('/invite_friend/',require('../models/auth').checkAuth,jsonParser,home_controller.invite_friend);
 
 router.post('/add_user_in_desc/',require('../models/auth').checkAuth,jsonParser,home_controller.add_user_in_desc);
+
+
+router.post('/ch_person_rules/',require('../models/auth').checkAuth,jsonParser,home_controller.ch_person_rules);
+router.post('/kick_person/',require('../models/auth').checkAuth,jsonParser,home_controller.kick_person);
 
 module.exports = router;
