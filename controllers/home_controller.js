@@ -1,22 +1,19 @@
-module.exports.home_page = async function (request,response) {
-    var descs = {};
-    try {
-        var ans = JSON.parse(request.user.tasks_id);
-        if(ans.length != 0)
-        {
-            let descs = await require('../models/descs').get_desc(ans);
-            response.render('home', {username:request.user.username, desc:descs[0]}); //request.user.username
-        }
-        else
-            response.render('home', {username:request.user.username});
-    }
-    catch(e)
-    {
-        console.log(e);
-        response.redirect('/smth_went_wrong')//TODO:smth_went_wrong page
-    }
-
+module.exports.home_page = function (request,response) {
+    response.render('home', {username:request.user.username});
 };
+module.exports.get_desks_home_page = async function (request, response)
+{
+    tasks = await require('../models/users').get_descs(request.user.id);//request.user.tasks_id;
+    var ans = JSON.parse(tasks);
+    if(ans.length != 0)
+    {
+        let descs = await require('../models/descs').get_desc(ans);
+        response.send(JSON.stringify(descs[0])); //request.user.username
+    }
+    else
+        response.send(JSON.stringify([]))
+};
+
 module.exports.add_desc = async function (request,response) {
     console.log(request.user);
     const user = JSON.stringify([{id:request.user.id,isadm:true}]);
@@ -34,12 +31,17 @@ module.exports.add_desc = async function (request,response) {
     response.send("Added!"); //request.user.username
 };
 module.exports.leave_desc = async function (request,response) {
+    let user_count=-1;
     try {
-        await require('../models/descs').kick_user(request.user.username,request.body.desc);
+        user_count = await require('../models/descs').kick_user(request.user.username,request.body.desc);
     }
     catch ( err )
     {
         console.log(err);
+    }
+    if (user_count == 0)
+    {
+        await require('../models/descs').del_desc(request.body.desc);
     }
     response.send("You left the desc!"); //request.user.username
 };
@@ -312,5 +314,12 @@ module.exports.del_friend = async function (request,response)
     }
    response.send(q);
 
+};
+
+module.exports.del_desc = async function (request,response)
+{
+    var desc_id = request.body.table_id;
+    await require('../models/descs').del_desc(desc_id);
+    response.send("successfully deleted");
 };
 

@@ -13,17 +13,26 @@ module.exports.add_desc = async function () {
     var wer = await pool.query("INSERT INTO descplace (name, description, users) VALUES (?,?,?)", [...arguments]);
     return wer;
 };
-module.exports.kick_user = async function (username, desc_id) {
+module.exports.kick_user = (username, desc_id)=>kick(username, desc_id);
+
+var kick = async function (username, desc_id) {
+    let users_count=-1;
     try
     {
         let err_counter = true;
         var wer = await pool.query("SELECT users FROM descplace WHERE id = (?)", [desc_id]);
         let users = JSON.parse(wer[0][0].users);
-        let user_id = await require('../models/users').get_id_by_nick(username);
+        let user_id = parseInt(username);
+        if(isNaN(user_id))
+            {
+                let res = await require('../models/users').get_id_by_nick(username);
+                user_id = res.id;
+            }
+
         let index = 0;
         users.forEach(function(item)
         {
-            if(String(item.id) == user_id.id)
+            if(String(item.id) == user_id)
             {
                 return;
             }
@@ -31,19 +40,19 @@ module.exports.kick_user = async function (username, desc_id) {
         });
 
         users.splice(index-1,1);
+        users_count = users.length;
         users = JSON.stringify(users);
         await pool.query("UPDATE descplace SET users = ? WHERE id = ?",[users,desc_id]);
-        let user_descs = JSON.parse(await require('../models/users').get_descs(user_id));
+        let user_descs = JSON.parse(await require('../models/users').get_descs(user_id));//user_id.id
         user_descs.splice(user_descs.indexOf(desc_id),1);
         user_descs = JSON.stringify(user_descs);
         err_counter &= await require('../models/users').upd_user_descs(user_id, user_descs);
-
-        return err_counter
+        return users_count;
     }
     catch(e)
     {
         console.log(e);
-        return false
+        return users_count;
     }
 
 };
@@ -115,4 +124,14 @@ module.exports.add_user_in_desc = async function (user_id, table_id) {
     }
 };
 
+module.exports.del_desc = async function(desc_id)
+{
+    var users = await pool.query("SELECT users FROM descplace WHERE id = (?)", [desc_id]);
+    users = JSON.parse(users[0][0].users);
 
+    users.forEach(function(item)
+    {
+        kick(item.id,desc_id)
+    });
+    await pool.query("DELETE FROM descplace WHERE id = (?)", [desc_id]);
+};

@@ -1,3 +1,18 @@
+function invite_friend(whom, where)
+{
+    const request = new XMLHttpRequest();
+    var url = "/invite_friend";
+    var params = JSON.stringify({whom:whom, where:where});
+    request.open("POST", url, true);
+    request.setRequestHeader("Content-Type", "application/json");
+    request.addEventListener("readystatechange", () => {
+        if (request.readyState === 4 && request.status === 200) {
+            alert(request.responseText);
+            console.log(request.responseText);
+        }
+    });
+    request.send(params);
+}
 function find_friend()
 {
     const request = new XMLHttpRequest();
@@ -12,9 +27,11 @@ function find_friend()
     });
     request.send(params);
 }
+
 var notif_length = 0;
 upd_notif();
 setInterval(upd_notif, 5000);
+show_friends();
 
 function upd_notif()
 {
@@ -50,7 +67,7 @@ function upd_notif()
     });
     request.send(params);
 }
-show_friends();
+
 function show_friends()
 {
     const request = new XMLHttpRequest();
@@ -112,21 +129,7 @@ function accept_notify(type, data)
     });
     request.send(params);
 }
-function invite_friend(whom, where)
-{
-    const request = new XMLHttpRequest();
-    var url = "/invite_friend";
-    var params = JSON.stringify({whom:whom, where:where});
-    request.open("POST", url, true);
-    request.setRequestHeader("Content-Type", "application/json");
-    request.addEventListener("readystatechange", () => {
-        if (request.readyState === 4 && request.status === 200) {
-            alert(request.responseText);
-            console.log(request.responseText);
-        }
-    });
-    request.send(params);
-}
+
 function decline_notify(type, data)
 {
     const request = new XMLHttpRequest();
@@ -169,18 +172,4 @@ function delete_friend(friend_name)
     });
     request.send(params);
 }
-function leave_desc(desc)
-{
-    const request = new XMLHttpRequest();
-    var params = JSON.stringify({desc:desc});
-    var url = "/leave_desc";
 
-    request.open("POST", url, true);
-    request.setRequestHeader("Content-Type", "application/json");
-    request.addEventListener("readystatechange", () => {
-        if (request.readyState === 4 && request.status === 200) {
-            console.log(request.responseText);
-        }
-    });
-    request.send(params);
-}

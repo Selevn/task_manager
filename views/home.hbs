@@ -71,17 +71,6 @@
                     </div>
 
                 </div>
-
-                {{#each desc}}
-                <div class="card w-100">
-                    <div class="card-body">
-                        <h5 class="card-title">{{this.name}}</h5>
-                        <p class="card-text">{{this.description}}</p>
-                        <a href="/desc/{{this.id}}" class="btn btn-primary">Go!</a>
-                        <a style="color:#fff" onclick = "leave_desc({{this.id}})" class="btn btn-danger">Leave this desc</a>
-                    </div>
-                </div>
-                {{/each}}
             </div>
             <div class="col-2 notifications">
                 <div class = "container notifications-list">
@@ -94,35 +83,5 @@
 </div>
 </body>
 <script src = "/js/notifications.js"></script>
-<script>
-function add_desc()
-{
-    var description, name;
-    name = prompt("Ввседите имя: ");
-
-    if (name != null) {
-
-        description = prompt("Ввседите описание: ");
-        if(description != null) {
-            // Создаем экземпляр класса XMLHttpRequest
-            const request = new XMLHttpRequest();
-            // Указываем путь до файла на сервере, который будет обрабатывать наш запрос
-            const url = "/add_desc";
-            // Так же как и в GET составляем строку с данными, но уже без пути к файлу
-            // const params = "name=" + name+ "&description=" + description;
-            var params = JSON.stringify({name: name, description: description});
-            request.open("POST", url, true);
-            //request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            request.setRequestHeader("Content-Type", "application/json");
-            request.addEventListener("readystatechange", () => {
-                if (request.readyState === 4 && request.status === 200) {
-                    console.log(request.responseText);
-                }
-            });
-            request.send(params);
-            console.log(name);
-        }
-    }
-}
-</script>
+<script src = "/js/home_scripts.js"></script>
 </html>

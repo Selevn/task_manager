@@ -5,7 +5,12 @@ const jsonParser = require('express').json();
 
 router.get('/desc/:id',require('../models/auth').checkAuth, home_controller.desc_page);
 router.get('/home/',require('../models/auth').checkAuth, home_controller.home_page);
+
+router.post('/get_desks_home_page/',require('../models/auth').checkAuth, home_controller.get_desks_home_page);
 router.post('/add_desc/',require('../models/auth').checkAuth,jsonParser,home_controller.add_desc);
+router.post('/del_desc/',require('../models/auth').checkAuth,jsonParser,home_controller.del_desc);
+
+
 router.post('/add_task/',require('../models/auth').checkAuth,jsonParser,home_controller.add_task);
 router.post('/upd_task/',require('../models/auth').checkAuth,jsonParser,home_controller.upd_task);
 router.post('/delete_task/',require('../models/auth').checkAuth,jsonParser,home_controller.delete_task);
