@@ -3,3 +3,5 @@ build
 npm-debug.log
 .idea
 .DS_Store
+tasksdb.sql
+CreateTable.js
