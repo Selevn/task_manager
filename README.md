@@ -18,7 +18,7 @@ or
 Then execute next commands:
 
 
-`npm init`
+`npm install`
 
 
 `npm start`
